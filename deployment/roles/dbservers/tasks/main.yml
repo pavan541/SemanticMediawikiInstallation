@@ -1,0 +1,16 @@
+---
+
+- name: set mysql-server root password for installer
+  shell: "{{ item }}"
+  with_items:
+    - echo mysql-server mysql-server/root_password password {{ mysql_root_password }} | sudo debconf-set-selections
+    - echo mysql-server mysql-server/root_password_again password {{ mysql_root_password }} | sudo debconf-set-selections
+
+- name: update apt cache 
+  apt: update_cache=yes
+
+- name: install mysql and modules
+  apt: name={{ item }} state=latest
+  with_items:
+    - mysql-server
+    - php5-mysql

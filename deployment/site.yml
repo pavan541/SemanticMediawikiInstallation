@@ -1,0 +1,6 @@
+---
+
+- include: webservers.yml
+- include: dbservers.yml
+- include: virtuoso.yml
+- include: mediawiki.yml

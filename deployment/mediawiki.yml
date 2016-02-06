@@ -1,0 +1,9 @@
+---
+
+- name: Download and install mediawiki
+  hosts: webservers
+  sudo: yes
+  roles:
+    - mediawiki
+
+

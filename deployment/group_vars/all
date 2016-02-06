@@ -1,0 +1,36 @@
+---
+
+git_repo: https://github.com/MaterialWays/semanticwiki.git
+
+git_branch: master
+
+mysql_root_user: root
+mysql_root_password: Knoesis2014
+
+virtuoso_url: http://downloads.sourceforge.net/project/virtuoso/virtuoso/7.2.1/virtuoso-opensource-7.2.1.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fvirtuoso%2Ffiles%2F&ts=1447431471&use_mirror=skylineservers
+
+virtuoso_version: '7.2.1'
+virtuoso_home: '/usr/local/'
+virtuoso_dir: '{{ virtuoso_home }}/virtuoso-opensource-{{ virtuoso_version }}' 
+
+git_repo_composer: https://github.com/JeroenDeDauw/ExtensionInstaller.git
+composer_extensions_path: /var/www/html/mediawiki/extensions/ExtensionInstaller/
+composer_path: /var/www/html/mediawiki/
+composer_update: true
+composer_update_day: 20
+composer_path_env: False
+composer_home_path: /var/www/html/mediawiki/extensions/ExtensionInstaller/
+composer_home_owner: root
+composer_home_group: root
+composer_global_packages: {}
+
+# Visit https://github.com/settings/applications 
+# and generate personal access token
+composer_github_oauth: false
+
+mediawiki_path: '/var/www/html'
+mediawiki_name: 'mediawiki'
+mediawiki_finalpath: '{{ mediawiki_path }}/{{ mediawiki_name }}/'
+mediawiki_database: mediawiki1
+wgSecretKey: '"fba9c9b6ff2f6dc3b2a4ff33864d1ba566721666dbe800e30946ab9fddb12ba4"'
+wgUpgradeKey: '"62ee529fd6dfe9f5"'

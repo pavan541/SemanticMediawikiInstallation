@@ -1,0 +1,8 @@
+---
+
+- name: set up dbservers
+  hosts: dbservers
+  sudo: yes
+  roles:
+    - dbservers
+

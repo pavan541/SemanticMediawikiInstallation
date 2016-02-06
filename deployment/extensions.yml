@@ -1,0 +1,7 @@
+---
+
+- name: Install mediaiwiki extensions
+  hosts: webservers
+  sudo: yes
+  roles:
+    - extensions

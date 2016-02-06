@@ -1,0 +1,8 @@
+---
+
+- name: set up webservers
+  hosts: webservers
+  sudo: yes
+  roles:
+    - webservers
+

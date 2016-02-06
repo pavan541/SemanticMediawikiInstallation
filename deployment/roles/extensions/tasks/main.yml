@@ -1,0 +1,87 @@
+---
+
+- name: Generate Temporary Local settings from template
+  template: src=LocalSettings_temp.php.j2 dest=/var/www/html/mediawiki/LocalSettings.php
+
+- name:  Update the mediwiki
+  command: php maintenance/update.php
+  args:
+    chdir: /var/www/html/mediawiki
+
+- name: Download extension installer
+  git: repo={{ git_repo_composer }} dest=/var/www/html/mediawiki/extensions/ExtensionInstaller update=yes
+
+- name: Generate settings from composer.json
+  template: src=composer.json.j2 dest=/var/www/html/mediawiki/extensions/ExtensionInstaller/composer.json mode=0644
+
+- name: Download and install Composer 
+  get_url:
+    url=https://getcomposer.org/composer.phar
+    dest={{ composer_extensions_path }}
+    mode=0755
+
+- name: Get stat of composer file
+  stat:
+    path="{{ composer_extensions_path }}"
+  register: composer_stat
+
+- name: Test if composer file exist
+  fail:
+    msg="{{ composer_extensions_path }} isn't exist"
+  when: composer_stat.stat.exists == false
+
+- name: Create composer home path
+  file: path={{ composer_home_path|default('~/.composer') }} state=directory owner={{ composer_home_owner }} group={{ composer_home_group }}
+
+- name: Generate settings from composer.json
+  template: src=composer_out.json.j2 dest=/var/www/html/mediawiki/composer.json 
+
+- name: Download and install Composer 
+  get_url:
+    url=https://getcomposer.org/composer.phar
+    dest={{ composer_path }}
+    mode=0755
+
+- name: Get stat of composer file
+  stat:
+    path="{{ composer_path }}"
+  register: composer_stat
+
+- name: Test if composer file exist
+  fail:
+    msg="{{ composer_path }} isn't exist"
+  when: composer_stat.stat.exists == false
+
+- name: Create composer home path
+  file: path={{ composer_home_path|default('~/.composer') }} state=directory owner={{ composer_home_owner }} group={{ composer_home_group }}
+
+# # - name: Run installation script
+# #   command: php maintenance/install.php --wiki=biosys --server=localhost --dbuser={{ mysql_root_user }} --dbpass={{ mysql_root_password }} --dbname={{ mediawiki_name }} --dbtype=mysql --pass=Express541 wiki pavan
+# #   args:
+# #     chdir: /var/www/html/mediawiki
+
+# - name: Create a database
+#   mysql_db: name={{ mediawiki_database }} state=present login_user={{ mysql_root_user }}  login_password={{ mysql_root_password }}
+#   notify: import sql file into the database
+
+- name: Run installation script for ExtensionInstaller
+  command: php composer.phar install
+  args:
+    chdir: /var/www/html/mediawiki/extensions/ExtensionInstaller/
+
+- name: Upgrade the mediwiki
+  command: php composer.phar require mediawiki/semantic-media-wiki:~1.9 --update-with-dependencies
+  args:
+    chdir: /var/www/html/mediawiki
+
+- name: Including vendor path in Processor.php
+  template: src=SemanticBundleSettings.php.j2 dest=/var/www/html/mediawiki/extensions/SemanticBundle/SemanticBundleSettings.php 
+
+- name: Creating new Localsettings file Including extensions
+  template: src=LocalSettings_main.php.j2 dest=/var/www/html/mediawiki/LocalSettings.php
+
+- name:  Update the mediwiki
+  command: php maintenance/update.php
+  args:
+    chdir: /var/www/html/mediawiki
+ 

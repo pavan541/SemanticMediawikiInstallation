@@ -1,0 +1,7 @@
+---
+
+- name: import sql file into the database
+  shell: mysql -u {{ mysql_root_user }} -p{{ mysql_root_password }} mediawiki < /var/www/html/mediawiki/mediawiki.sql
+
+- name: import default sql file into the database
+  shell: mysql -u {{ mysql_root_user }} -p{{ mysql_root_password }} mediawiki < /var/www/html/mediawiki/mediawiki_initial.sql

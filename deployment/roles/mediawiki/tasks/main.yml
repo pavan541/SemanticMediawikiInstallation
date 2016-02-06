@@ -1,0 +1,45 @@
+---
+
+- name: update apt cache 
+  apt: update_cache=yes
+
+- name: install modules for mediawiki
+  apt: name={{ item }} state=latest
+  with_items:
+    - php5
+    - libapache2-mod-php5
+    - php5-mcrypt
+    - php-apc
+    - php5-intl
+    - php5-mysql
+    - imagemagick
+    - phpmyadmin
+    - vsftpd
+    - php5-cli
+    - python-mysqldb
+    - git
+
+- name: Pull latest code of mediawiki from git repository
+  git: repo={{ git_repo }} dest=/etc/mediawiki update=yes version={{ git_branch }} force=yes
+
+- name:  Check for the downloaded mediawik code 
+  stat: path=/etc/mediawiki
+  register: mediawiki_status
+
+- name: Assure html file exists
+  file: path=/var/www/html state=directory
+
+- name: Move the extracted mediawiki code to webserver
+  command: mv /etc/mediawiki/mediawiki /var/www/html/mediawiki/
+
+- name: Copying default LocalSettings.php file from template
+  template: src=LocalSettings_initial.php.j2 dest=/var/www/html/mediawiki/LocalSettings.php
+
+# - name: Create a defult mysql database
+#   mysql_db: name={{ mediawiki_database }} state=present login_user={{ mysql_root_user }}  login_password={{ mysql_root_password }}
+#   notify: import default sql file into the database
+
+# - name:  Update the mediwiki
+#   command: php maintenance/update.php
+#   args:
+#     chdir: /var/www/html/mediawiki

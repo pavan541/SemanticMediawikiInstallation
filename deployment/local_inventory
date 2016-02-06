@@ -1,0 +1,12 @@
+[webservers]
+localhost    ansible_connection=local
+
+[dbservers]
+localhost    ansible_connection=local
+
+[virtuoso]
+localhost    ansible_connection=local
+
+[mediawiki]
+localhost    ansible_connection=local
+
